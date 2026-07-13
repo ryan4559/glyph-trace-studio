@@ -1,0 +1,11 @@
+{
+  "name": "img-2-openscad",
+  "private": true,
+  "type": "module",
+  "description": "Glyph Trace Studio — pure-frontend glyph tracing editor + Taiwan license-plate SCAD generator. No dependencies, no build step; package.json exists only so Node treats the app's ES modules as ESM in tests.",
+  "scripts": {
+    "test": "node tools/tests/test_project_schema.mjs && node tools/tests/test_glyph_contract.mjs && node tools/tests/test_taiwan_glyphs.mjs && node tools/tests/test_taiwan_plates.mjs && node tools/tests/test_autotrace.mjs",
+    "build:glyphs": "node tools/build_taiwan_glyphs.mjs",
+    "build:autotrace-fixtures": "node tools/build_autotrace_fixtures.mjs"
+  }
+}

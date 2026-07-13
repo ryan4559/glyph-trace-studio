@@ -1,0 +1,14 @@
+{
+  "app": "glyph-trace-studio-bundle",
+  "version": 2,
+  "settings": {
+    "chars": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "svgW": 45,
+    "svgH": 89,
+    "prefix": "2012_",
+    "modulePrefix": "glyph_2012_"
+  },
+  "ref": "./taiwan-glyphs/example/reference.png",
+  "sources": "./taiwan-glyphs/example/sources.json",
+  "traces": "./taiwan-glyphs/traces.json"
+}

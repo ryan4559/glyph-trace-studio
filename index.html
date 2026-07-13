@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Data never leaves the browser: block every external request. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'"
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="alternate icon" type="image/png" href="./favicon.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Glyph Trace Studio — image to SVG / OpenSCAD</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div>
+            <h1 data-i18n="app.title">Glyph Trace Studio</h1>
+            <p data-i18n="app.subtitle">Image → SVG / OpenSCAD</p>
+          </div>
+          <label class="language-picker">
+            <span data-i18n="language.label">Language</span>
+            <select id="languageSelect"></select>
+          </label>
+        </div>
+
+        <section class="sidebar-preview">
+          <div class="panel-head compact">
+            <div>
+              <div class="eyebrow" data-i18n="preview.eyebrow">Preview</div>
+              <h2 id="previewTitle">A</h2>
+            </div>
+          </div>
+
+          <div class="compare">
+            <div class="compare-panel">
+              <div class="label">PNG</div>
+              <img id="pngPreview" alt="Live cropped PNG preview" data-i18n-attr="alt:preview.pngAlt" />
+            </div>
+            <div class="compare-panel">
+              <div class="label">SVG</div>
+              <img id="svgPreview" alt="Traced SVG preview" data-i18n-attr="alt:preview.svgAlt" />
+            </div>
+          </div>
+        </section>
+
+        <section id="cropControls" class="sidebar-controls">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow" data-i18n="crop.eyebrow">Crop settings</div>
+              <h2 data-i18n="crop.heading">Output</h2>
+            </div>
+            <button id="saveButton" class="primary" type="button" data-i18n="crop.save">Save crop</button>
+          </div>
+          <div class="field-row">
+            <label>
+              <span>X</span>
+              <input id="x0" type="number" min="0" max="8192" />
+            </label>
+            <label>
+              <span>Y</span>
+              <input id="y0" type="number" min="0" max="8192" />
+            </label>
+          </div>
+          <div class="field-row">
+            <label>
+              <span>W</span>
+              <input id="width" type="number" min="1" max="8192" />
+            </label>
+            <label>
+              <span>H</span>
+              <input id="height" type="number" min="1" max="8192" />
+            </label>
+          </div>
+          <label class="full-field">
+            <span data-i18n="crop.foreground">Foreground</span>
+            <select id="polarity">
+              <option value="dark" data-i18n="crop.darkPixels">dark pixels</option>
+              <option value="light" data-i18n="crop.lightPixels">light pixels</option>
+            </select>
+          </label>
+          <label class="full-field">
+            <span><span data-i18n="crop.threshold">Threshold</span> <b id="thresholdValue">110</b></span>
+            <input id="threshold" type="range" min="0" max="255" value="110" />
+          </label>
+          <label class="full-field" data-i18n-attr="title: crop.offsetXHint">
+            <span data-i18n="crop.offsetX">X offset (canvas px)</span>
+            <input id="offsetX" type="number" min="-999" max="999" step="1" value="0" />
+          </label>
+          <div id="sourceInfo" class="source-card" aria-live="polite"></div>
+        </section>
+
+        <section id="traceControls" class="trace-controls">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow" data-i18n="trace.eyebrow">Bezier trace</div>
+              <h2 data-i18n="trace.heading">Manual outline</h2>
+            </div>
+          </div>
+          <div class="trace-actions">
+            <button id="addContourButton" class="ghost" type="button" data-i18n="trace.addHole">Add hole</button>
+            <button id="deletePointButton" class="ghost danger" type="button" data-i18n="trace.deletePoint">Delete point</button>
+            <button id="setOuterButton" class="ghost" type="button" data-i18n="trace.setOuter">Set as outer</button>
+            <button id="setHoleButton" class="ghost" type="button" data-i18n="trace.setHole">Set as hole</button>
+            <button id="undoTraceButton" class="ghost" type="button" data-i18n="trace.undoPoint">Undo point</button>
+            <button id="clearTraceButton" class="ghost" type="button" data-i18n="trace.clear">Clear</button>
+            <button id="saveTraceButton" class="primary" type="button" data-i18n="trace.save">Save trace</button>
+          </div>
+          <div class="field-row auto-trace-row">
+            <label>
+              <span data-i18n="trace.autoRound">Roundness (0–1)</span>
+              <input id="autoRoundInput" type="number" min="0" max="1" step="0.05" value="0.5" />
+            </label>
+            <button id="autoTraceButton" class="ghost" type="button" data-i18n="trace.auto">Auto trace</button>
+          </div>
+          <div class="trace-note" data-i18n="trace.note">Draw the outer outline first. Use Add hole before drawing an inner contour. Click an existing segment to insert a point. Saved contours after the first one are treated as holes. Delete point removes the selected black node, and Set as outer / Set as hole changes contour order.</div>
+        </section>
+
+        <div id="status" class="status" role="status"></div>
+
+        <section class="char-section">
+          <div class="section-head">
+            <div class="eyebrow" data-i18n="glyphs.eyebrow">Glyphs</div>
+          </div>
+          <div id="charGrid" class="char-grid"></div>
+        </section>
+
+        <section id="exportSection" class="sidebar-controls">
+          <div class="panel-head compact">
+            <div>
+              <div class="eyebrow" data-i18n="export.eyebrow">Export</div>
+              <h2 data-i18n="export.heading">Downloads</h2>
+            </div>
+          </div>
+          <div class="trace-actions">
+            <button id="downloadSvgButton" class="ghost" type="button" data-i18n="export.svg">SVG (glyph)</button>
+            <button id="downloadScadButton" class="ghost" type="button" data-i18n="export.scad">SCAD (glyph)</button>
+            <button id="downloadPngButton" class="ghost" type="button" data-i18n="export.png">PNG (glyph)</button>
+            <button id="downloadZipButton" class="primary" type="button" data-i18n="export.zip">ZIP (all)</button>
+            <button id="exportProjectButton" class="ghost" type="button" data-i18n="export.project">Export project</button>
+            <button id="importProjectButton" class="ghost" type="button" data-i18n="export.import">Import project</button>
+          </div>
+        </section>
+
+        <section id="settingsSection" class="sidebar-controls">
+          <div class="panel-head">
+            <div>
+              <div class="eyebrow" data-i18n="settings.eyebrow">Settings</div>
+              <h2 data-i18n="settings.heading">Project</h2>
+            </div>
+            <button id="applySettingsButton" class="ghost" type="button" data-i18n="settings.apply">Apply</button>
+          </div>
+          <label class="full-field">
+            <span data-i18n="settings.charset">Characters</span>
+            <input id="charsetInput" type="text" spellcheck="false" autocomplete="off" />
+          </label>
+          <div class="field-row">
+            <label>
+              <span data-i18n="settings.widthMm">Width (mm)</span>
+              <input id="svgWInput" type="number" min="1" max="1000" step="0.5" />
+            </label>
+            <label>
+              <span data-i18n="settings.heightMm">Height (mm)</span>
+              <input id="svgHInput" type="number" min="1" max="1000" step="0.5" />
+            </label>
+          </div>
+          <label class="full-field">
+            <span data-i18n="settings.prefix">Name prefix</span>
+            <input id="prefixInput" type="text" spellcheck="false" autocomplete="off" />
+          </label>
+          <div class="trace-note" data-i18n="settings.note">Characters define the glyph grid. Width/height set the exported SVG/SCAD size in mm (the editing canvas is 4 px per mm). The prefix names files and OpenSCAD modules.</div>
+          <button id="reloadBundleButton" class="ghost" type="button" data-i18n="settings.reloadBundle" hidden>Reload bundled project</button>
+          <button id="newProjectButton" class="ghost danger" type="button" data-i18n="settings.newProject">New project (clear)</button>
+        </section>
+
+        <section id="plateLinkSection" class="sidebar-controls">
+          <div class="panel-head compact">
+            <div>
+              <div class="eyebrow" data-i18n="plates.eyebrow">OpenSCAD</div>
+              <h2 data-i18n="plates.heading">License-plate keychain generator</h2>
+            </div>
+          </div>
+          <div class="trace-note" data-i18n="plates.note">Taiwan license-plate keychain models (.scad) — 1992 style and new style (2012+, 3-4); plate number, colors and size are customizable, and the glyphs come from this editor's traces.</div>
+          <a class="plate-link" href="./taiwan-plate.html" target="_blank" rel="noopener" data-i18n="plates.link">Open the generator ↗</a>
+        </section>
+      </aside>
+
+      <main class="workspace">
+        <header class="toolbar">
+          <div class="toolbar-left">
+            <div class="mode-switch" role="group" aria-label="Editor mode" data-i18n-attr="aria-label:workspace.modeAria">
+              <button id="cropModeButton" class="mode-button active" type="button" data-i18n="mode.crop">Crop</button>
+              <button id="traceModeTopButton" class="mode-button" type="button" data-i18n="mode.trace">Trace</button>
+            </div>
+            <div class="image-controls">
+              <label class="image-picker">
+                <span data-i18n="image.label">Reference image</span>
+                <select id="imageSelect"></select>
+              </label>
+              <button id="uploadButton" class="ghost" type="button" data-i18n="upload.button">Add images</button>
+              <button id="removeImageButton" class="ghost danger" type="button" data-i18n="image.remove">Remove</button>
+            </div>
+          </div>
+          <div class="zoom-control">
+            <button id="fitButton" class="ghost" type="button" data-i18n="workspace.fit">Fit</button>
+            <button id="gridToggleButton" class="ghost grid-toggle active" type="button" aria-pressed="true" data-i18n="workspace.grid" hidden>Grid</button>
+            <label>
+              <span><span data-i18n="workspace.zoom">Zoom</span> <b id="zoomValue">100%</b></span>
+              <input id="zoom" type="range" min="10" max="400" value="100" />
+            </label>
+          </div>
+        </header>
+
+        <section class="canvas-shell">
+          <div id="canvasScroller" class="canvas-scroller">
+            <canvas id="refCanvas"></canvas>
+          </div>
+          <div id="traceStage" class="trace-stage" hidden>
+            <div class="trace-rulers" aria-hidden="true">
+              <canvas id="traceRulerX"></canvas>
+              <canvas id="traceRulerY"></canvas>
+            </div>
+            <canvas id="traceCanvas" width="540" height="1068"></canvas>
+          </div>
+          <div id="emptyState" class="empty-state" hidden>
+            <div class="empty-card">
+              <h2 data-i18n="upload.emptyTitle">Add reference images</h2>
+              <p data-i18n="upload.emptyBody">Drop one or more images here, or pick files. Each saved crop stays linked to its source image, and everything remains in your browser.</p>
+              <button id="emptyUploadButton" class="primary" type="button" data-i18n="upload.button">Add images</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <input id="filePicker" type="file" accept="image/*" multiple hidden />
+    <input id="projectPicker" type="file" accept="application/json,.json" hidden />
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

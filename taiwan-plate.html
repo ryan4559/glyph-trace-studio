@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Data never leaves the browser: block every external request. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'"
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="alternate icon" type="image/png" href="./favicon.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>台灣車牌鑰匙圈產生器 — Taiwan License Plate Keychain Generator</title>
+    <link rel="stylesheet" href="./taiwan-plate.css" />
+  </head>
+  <body>
+    <main>
+      <h1>台灣車牌鑰匙圈產生器</h1>
+      <p class="subtitle">Taiwan license-plate keychain generator — OpenSCAD customizer models</p>
+      <p class="tool-link">字體以 <a href="./">Glyph Trace Studio</a> 描邊製作（0–9、A–Z 共 36 字，45×89 mm）。</p>
+
+      <section>
+        <h2>字形預覽 Glyphs</h2>
+        <div id="glyphGrid" class="glyph-grid"></div>
+      </section>
+
+      <section>
+        <h2>車牌模型下載 Plate downloads</h2>
+        <label>
+          SCAD 檔頭註解（每行一條）/ SCAD header comments (one per line)
+          <textarea id="headerInput" rows="4" wrap="off" spellcheck="false"></textarea>
+        </label>
+        <h3>1992 年式（原型式）</h3>
+        <div id="plateButtons" class="buttons"></div>
+        <h3>新式（2012 年起，3-4）</h3>
+        <div id="plateButtons2012" class="buttons"></div>
+        <div id="status" role="status"></div>
+        <ul class="note">
+          <li>下載的 .scad 以 OpenSCAD 開啟後，用 Customizer 設定車牌號碼、顏色、字距與尺寸倍率。</li>
+          <li>預設倍率 0.15 約為 4–5 cm 寬的鑰匙圈，設為 1 即是原尺寸車牌。</li>
+          <li>兩種年式版面均使用交通部公路局發布的 2012 年式字形。</li>
+          <li>1992 年式規格：汽車 320×150（2-4，Customizer 可切換 4-2 兩碼結尾格式）、普通重機 250×140（3-3）、大型重機 260×150（2-2）；螺絲孔均為 30×10 長槽。</li>
+          <li>新式規格：汽車 380×160、機車 260×140、大型重機 300×150（均為 3-4 七碼）；含外框凸緣＋凹版面、三個梅花防偽標記（左右凹、中間凸）、圓端螺絲孔槽。大型重機可在 Customizer 切換紅牌／黃牌（預設紅牌）。</li>
+        </ul>
+      </section>
+
+      <footer>
+        <span id="sourceNote">字形與模型即時生成。</span>
+        在 <a href="./">編輯器</a> 修改描邊後，重新整理本頁即可套用。
+      </footer>
+    </main>
+
+    <script type="module" src="./taiwan-plate.js"></script>
+  </body>
+</html>

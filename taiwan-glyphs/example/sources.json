@@ -1,0 +1,470 @@
+{
+  "0": {
+    "char": "0",
+    "source": "official-2012-svg",
+    "box": [
+      12,
+      12,
+      192,
+      368
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "1": {
+    "char": "1",
+    "source": "official-2012-svg",
+    "box": [
+      216,
+      12,
+      396,
+      368
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "2": {
+    "char": "2",
+    "source": "official-2012-svg",
+    "box": [
+      420,
+      12,
+      600,
+      368
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "3": {
+    "char": "3",
+    "source": "official-2012-svg",
+    "box": [
+      624,
+      12,
+      804,
+      368
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "4": {
+    "char": "4",
+    "source": "official-2012-svg",
+    "box": [
+      828,
+      12,
+      1008,
+      368
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "5": {
+    "char": "5",
+    "source": "official-2012-svg",
+    "box": [
+      1032,
+      12,
+      1212,
+      368
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "6": {
+    "char": "6",
+    "source": "official-2012-svg",
+    "box": [
+      1236,
+      12,
+      1416,
+      368
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "7": {
+    "char": "7",
+    "source": "official-2012-svg",
+    "box": [
+      1440,
+      12,
+      1620,
+      368
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "8": {
+    "char": "8",
+    "source": "official-2012-svg",
+    "box": [
+      12,
+      392,
+      192,
+      748
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "9": {
+    "char": "9",
+    "source": "official-2012-svg",
+    "box": [
+      216,
+      392,
+      396,
+      748
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "A": {
+    "char": "A",
+    "source": "official-2012-svg",
+    "box": [
+      420,
+      392,
+      600,
+      748
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "B": {
+    "char": "B",
+    "source": "official-2012-svg",
+    "box": [
+      624,
+      392,
+      804,
+      748
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "C": {
+    "char": "C",
+    "source": "official-2012-svg",
+    "box": [
+      828,
+      392,
+      1008,
+      748
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "D": {
+    "char": "D",
+    "source": "official-2012-svg",
+    "box": [
+      1032,
+      392,
+      1212,
+      748
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "E": {
+    "char": "E",
+    "source": "official-2012-svg",
+    "box": [
+      1236,
+      392,
+      1416,
+      748
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "F": {
+    "char": "F",
+    "source": "official-2012-svg",
+    "box": [
+      1440,
+      392,
+      1620,
+      748
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "G": {
+    "char": "G",
+    "source": "official-2012-svg",
+    "box": [
+      12,
+      772,
+      192,
+      1128
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "H": {
+    "char": "H",
+    "source": "official-2012-svg",
+    "box": [
+      216,
+      772,
+      396,
+      1128
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "I": {
+    "char": "I",
+    "source": "official-2012-svg",
+    "box": [
+      420,
+      772,
+      600,
+      1128
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "J": {
+    "char": "J",
+    "source": "official-2012-svg",
+    "box": [
+      624,
+      772,
+      804,
+      1128
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "K": {
+    "char": "K",
+    "source": "official-2012-svg",
+    "box": [
+      828,
+      772,
+      1008,
+      1128
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "L": {
+    "char": "L",
+    "source": "official-2012-svg",
+    "box": [
+      1032,
+      772,
+      1212,
+      1128
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "M": {
+    "char": "M",
+    "source": "official-2012-svg",
+    "box": [
+      1236,
+      772,
+      1416,
+      1128
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "N": {
+    "char": "N",
+    "source": "official-2012-svg",
+    "box": [
+      1440,
+      772,
+      1620,
+      1128
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "O": {
+    "char": "O",
+    "source": "official-2012-svg",
+    "box": [
+      12,
+      1152,
+      192,
+      1508
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "P": {
+    "char": "P",
+    "source": "official-2012-svg",
+    "box": [
+      216,
+      1152,
+      396,
+      1508
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "Q": {
+    "char": "Q",
+    "source": "official-2012-svg",
+    "box": [
+      420,
+      1152,
+      600,
+      1508
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "R": {
+    "char": "R",
+    "source": "official-2012-svg",
+    "box": [
+      624,
+      1152,
+      804,
+      1508
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "S": {
+    "char": "S",
+    "source": "official-2012-svg",
+    "box": [
+      828,
+      1152,
+      1008,
+      1508
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "T": {
+    "char": "T",
+    "source": "official-2012-svg",
+    "box": [
+      1032,
+      1152,
+      1212,
+      1508
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "U": {
+    "char": "U",
+    "source": "official-2012-svg",
+    "box": [
+      1236,
+      1152,
+      1416,
+      1508
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "V": {
+    "char": "V",
+    "source": "official-2012-svg",
+    "box": [
+      1440,
+      1152,
+      1620,
+      1508
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "W": {
+    "char": "W",
+    "source": "official-2012-svg",
+    "box": [
+      12,
+      1532,
+      192,
+      1888
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "X": {
+    "char": "X",
+    "source": "official-2012-svg",
+    "box": [
+      216,
+      1532,
+      396,
+      1888
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "Y": {
+    "char": "Y",
+    "source": "official-2012-svg",
+    "box": [
+      420,
+      1532,
+      600,
+      1888
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  },
+  "Z": {
+    "char": "Z",
+    "source": "official-2012-svg",
+    "box": [
+      624,
+      1532,
+      804,
+      1888
+    ],
+    "polarity": "dark",
+    "threshold": 110,
+    "offset_x": 0
+  }
+}
