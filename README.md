@@ -79,11 +79,12 @@ uses the same 2012 glyph set under `taiwan-glyphs/`.
   face, three plum-blossom anti-counterfeit marks (two recessed, one
   raised), round-ended screw slots and keychain hole (geometry in the
   `SPECS_2012` table).
-- The `//` header comment block at the top of each file (author, link, source,
-  and license) is editable, one comment per line; the original text is the
+- The `//` header comment block at the top of each file (author, link, and
+  license) is editable, one comment per line; the original text is the
   default template. Generated plate models default to
   `License: CC-Attribution-ShareAlike`; this model-header choice is separate
-  from the repository's MIT license and the government glyph-source license.
+  from the repository's MIT license and the government glyph-source license
+  (the glyph provenance is stated in the page's notes instead of the header).
 - Pre-generated glyph SVG/SCAD files live independently in
   `taiwan-glyphs/output/`; the plate-model outputs live in the corresponding
   `taiwan-1992/output/` and `taiwan-2012/output/` directories.

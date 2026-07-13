@@ -2,8 +2,6 @@
 // Author: https://makerworld.com/@Ryanooo
 // Link: https://makerworld.com/models/
 // Inspired by: https://makerworld.com/models/70954#profileId-75209
-// Glyph source: 交通部公路局《新式號牌使用之英文字、數字字體》
-// Glyph source license: Open Government Data License 1.0 (https://data.gov.tw/license)
 // License: CC-Attribution-ShareAlike
 
 /* [建議設置] */

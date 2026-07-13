@@ -72,6 +72,9 @@ button:disabled { opacity: 0.5; cursor: default; }
 .note { font-size: 13px; color: var(--muted); margin-top: 12px; }
 ul.note { padding-left: 1.5em; margin-bottom: 0; }
 ul.note li { margin: 2px 0; }
+ul.note > li { margin-top: 6px; }
+ul.note > li:first-child { margin-top: 0; }
+ul.note ul { padding-left: 1.5em; margin: 2px 0 0; }
 #status { min-height: 1.4em; font-size: 13px; margin-top: 10px; }
 #status.error { color: #b42318; }
 #status.ok { color: var(--accent); }
