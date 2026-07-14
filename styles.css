@@ -226,6 +226,7 @@ h2 {
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
@@ -237,6 +238,8 @@ h2 {
 
 .toolbar-left {
   display: flex;
+  flex: 1 1 680px;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   min-width: 0;
@@ -244,14 +247,21 @@ h2 {
 
 .image-controls {
   display: flex;
+  flex: 1 1 360px;
   align-items: end;
   gap: 8px;
-  min-width: 0;
+  min-width: min(100%, 360px);
 }
 
 .image-picker {
+  flex: 1 1 180px;
   width: clamp(170px, 24vw, 300px);
   min-width: 0;
+}
+
+.toolbar button {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .image-picker span {
@@ -264,10 +274,12 @@ h2 {
 
 .zoom-control {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
   min-width: 280px;
+  margin-left: auto;
   color: var(--muted);
   font-size: 13px;
 }
@@ -282,12 +294,21 @@ h2 {
 
 .mode-switch {
   display: inline-grid;
+  flex: 0 0 auto;
   grid-template-columns: 1fr 1fr;
   gap: 3px;
   padding: 3px;
   border: 1px solid var(--line);
   border-radius: 9px;
   background: var(--surface-soft);
+}
+
+.mode-switch[hidden] {
+  display: none;
+}
+
+.trace-view-switch .mode-button {
+  padding-inline: 10px;
 }
 
 .mode-button {
@@ -716,7 +737,7 @@ input[type="range"] {
   color: var(--accent-dark);
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1280px) {
   #app {
     grid-template-columns: 308px minmax(0, 1fr);
   }
@@ -727,12 +748,14 @@ input[type="range"] {
   }
 
   .toolbar-left {
+    flex: 0 0 auto;
     width: 100%;
     flex-wrap: wrap;
   }
 
   .image-controls {
     flex: 1 1 420px;
+    min-width: min(100%, 420px);
   }
 
   .image-picker {
@@ -742,6 +765,7 @@ input[type="range"] {
 
   .zoom-control {
     width: 100%;
+    margin-left: 0;
     justify-content: space-between;
   }
 }

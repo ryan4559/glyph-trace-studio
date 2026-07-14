@@ -56,10 +56,12 @@ const state = {
   dragOffset: null,
   previewFrame: null,
   mode: "crop",
+  traceView: "overlay",
   activeContour: 0,
   selectedPoint: null,
   traceDragging: null,
   traceImage: new Image(),
+  traceImageSrc: null,
   traceImageReady: false,
   zoomByMode: { crop: null, trace: null },
   language: "en",
@@ -104,6 +106,9 @@ const els = {
   traceControls: document.querySelector("#traceControls"),
   cropModeButton: document.querySelector("#cropModeButton"),
   traceModeTopButton: document.querySelector("#traceModeTopButton"),
+  traceViewSwitch: document.querySelector("#traceViewSwitch"),
+  traceOverlayButton: document.querySelector("#traceOverlayButton"),
+  traceSideBySideButton: document.querySelector("#traceSideBySideButton"),
   traceStage: document.querySelector("#traceStage"),
   traceCanvas: document.querySelector("#traceCanvas"),
   traceRulerX: document.querySelector("#traceRulerX"),
@@ -148,6 +153,7 @@ const TRACE_MAX_BACKING = 4096;
 const HANDLE_R = 5;
 const TRACE_RULER = 14;
 const TRACE_PAD = 40;
+const TRACE_SIDE_GAP = 40;
 const TRACE_CONTROL_MARGIN = TRACE_PAD;
 let TRACE_WORLD_W = TRACE_RULER + TRACE_PAD * 2 + CANVAS_W;
 let TRACE_WORLD_H = TRACE_RULER + TRACE_PAD * 2 + CANVAS_H;
@@ -198,6 +204,11 @@ const LANGUAGES = {
       "trace.save": "Save trace",
       "trace.auto": "Auto trace",
       "trace.autoRound": "Roundness (0–1)",
+      "trace.viewAria": "Trace view",
+      "trace.viewOverlay": "Overlay",
+      "trace.viewSideBySide": "Side by side",
+      "trace.canvasLabel": "Canvas",
+      "trace.referenceLabel": "Reference",
       "trace.note": "Draw the outer outline first. Use Add hole before drawing an inner contour. Click an existing segment to insert a point. Saved contours after the first one are treated as holes. Delete point removes the selected black node, and Set as outer / Set as hole changes contour order.",
       "glyphs.eyebrow": "Glyphs",
       "workspace.modeAria": "Editor mode",
@@ -320,6 +331,11 @@ const LANGUAGES = {
       "trace.save": "儲存描邊",
       "trace.auto": "自動描邊",
       "trace.autoRound": "圓潤度（0–1）",
+      "trace.viewAria": "描邊檢視方式",
+      "trace.viewOverlay": "疊圖",
+      "trace.viewSideBySide": "並排",
+      "trace.canvasLabel": "畫布",
+      "trace.referenceLabel": "參考圖",
       "trace.note": "先畫外輪廓。要開洞時按「新增內洞」，再在字裡面畫第二個 contour；點擊既有線段可插入節點。儲存後第二個、第三個 contour 都會當成內洞。「刪除節點」會刪掉目前選中的黑色節點，「設為外輪廓 / 設為內洞」會改 contour 順序。",
       "glyphs.eyebrow": "字形",
       "workspace.modeAria": "編輯器模式",
@@ -456,6 +472,7 @@ async function init() {
     }
   }
   state.mode = uiState.mode === "trace" ? "trace" : "crop";
+  state.traceView = uiState.traceView === "side-by-side" ? "side-by-side" : "overlay";
   state.showGrid = uiState.showGrid !== false;
   state.zoomByMode.crop = numberOrNull(uiState.cropZoom);
   state.zoomByMode.trace = numberOrNull(uiState.traceZoom);
@@ -624,8 +641,7 @@ async function reloadBundle() {
 function applySettings() {
   CANVAS_W = Math.max(8, Math.round(state.settings.svgW * PX_PER_MM));
   CANVAS_H = Math.max(8, Math.round(state.settings.svgH * PX_PER_MM));
-  TRACE_WORLD_W = TRACE_RULER + TRACE_PAD * 2 + CANVAS_W;
-  TRACE_WORLD_H = TRACE_RULER + TRACE_PAD * 2 + CANVAS_H;
+  updateTraceWorldSize();
   state.chars = parseCharset(state.settings.chars);
   configureTraceCanvas();
   const aspect = `${CANVAS_W} / ${CANVAS_H}`;
@@ -826,6 +842,7 @@ function loadReference(src) {
     updateEmptyState();
     draw();
     updatePreview();
+    if (state.mode === "trace") loadTraceImage();
     requestAnimationFrame(centerSelectionInView);
   };
   image.onerror = () => {
@@ -999,6 +1016,7 @@ function setLanguage(language) {
   persistUiState();
   applyTranslations();
   updateSourceSummary();
+  if (state.mode === "trace") drawTrace();
 }
 
 function languageOrDefault(language) {
@@ -1096,6 +1114,8 @@ function bindEvents() {
   els.saveButton.addEventListener("click", saveCrop);
   els.cropModeButton.addEventListener("click", () => setMode("crop"));
   els.traceModeTopButton.addEventListener("click", () => setMode("trace"));
+  els.traceOverlayButton.addEventListener("click", () => setTraceView("overlay"));
+  els.traceSideBySideButton.addEventListener("click", () => setTraceView("side-by-side"));
   els.addContourButton.addEventListener("click", addContour);
   els.deletePointButton.addEventListener("click", deleteSelectedPoint);
   els.setOuterButton.addEventListener("click", setContourOuter);
@@ -1245,6 +1265,12 @@ function configureTraceCanvas() {
   els.traceCanvas.style.height = `${TRACE_WORLD_H * TRACE_SCALE}px`;
 }
 
+function updateTraceWorldSize() {
+  const sideBySideWidth = state.traceView === "side-by-side" ? TRACE_SIDE_GAP + CANVAS_W : 0;
+  TRACE_WORLD_W = TRACE_RULER + TRACE_PAD * 2 + CANVAS_W + sideBySideWidth;
+  TRACE_WORLD_H = TRACE_RULER + TRACE_PAD * 2 + CANVAS_H;
+}
+
 function loadUiState() {
   try {
     return JSON.parse(localStorage.getItem(UI_STORAGE_KEY) || "{}");
@@ -1260,6 +1286,7 @@ function persistUiState() {
       JSON.stringify({
         language: state.language,
         mode: state.mode,
+        traceView: state.traceView,
         showGrid: state.showGrid,
         selected: state.selected,
         cropZoom: state.zoomByMode.crop,
@@ -1554,11 +1581,13 @@ function setMode(mode) {
   persistUiState();
   els.cropModeButton.classList.toggle("active", mode === "crop");
   els.traceModeTopButton.classList.toggle("active", mode === "trace");
+  els.traceViewSwitch.hidden = mode !== "trace";
   els.cropControls.hidden = mode !== "crop";
   els.traceControls.hidden = mode !== "trace";
   els.scroller.hidden = mode !== "crop";
   els.traceStage.hidden = mode !== "trace";
   els.gridToggleButton.hidden = mode !== "trace";
+  updateTraceViewButtons();
   updateGridToggle();
   updateEmptyState();
   els.zoom.value = String(state.zoomByMode[mode] ?? 100);
@@ -1575,6 +1604,31 @@ function setMode(mode) {
     }
     draw();
   }
+}
+
+function setTraceView(view) {
+  const next = view === "side-by-side" ? "side-by-side" : "overlay";
+  if (state.traceView === next) return;
+  state.traceView = next;
+  updateTraceWorldSize();
+  configureTraceCanvas();
+  updateTraceViewButtons();
+  persistUiState();
+  if (state.mode !== "trace") return;
+  // Fit after a layout switch so both panels are immediately visible in
+  // side-by-side mode and the canvas fills the stage again in overlay mode.
+  fitToView();
+  drawTrace();
+  requestAnimationFrame(drawTraceOverlayRulers);
+}
+
+function updateTraceViewButtons() {
+  const overlay = state.traceView === "overlay";
+  els.traceOverlayButton.classList.toggle("active", overlay);
+  els.traceSideBySideButton.classList.toggle("active", !overlay);
+  els.traceOverlayButton.setAttribute("aria-pressed", String(overlay));
+  els.traceSideBySideButton.setAttribute("aria-pressed", String(!overlay));
+  els.traceStage.dataset.view = state.traceView;
 }
 
 // The working copy edited on the trace canvas. Created lazily from the
@@ -1721,13 +1775,17 @@ async function autoTraceCurrent() {
 }
 
 function loadTraceImage() {
-  state.traceImageReady = false;
   const source = state.sources[state.selected];
   const src =
     state.glyphs[state.selected] ||
     (state.imageReady && source?.box && source.imageId === state.activeImageId
       ? renderGlyphPng(source)
       : null);
+  // selectChar() and setMode("trace") can run back-to-back during startup;
+  // keep the first in-flight or decoded image instead of decoding it twice.
+  if (src && src === state.traceImageSrc) return;
+  state.traceImageReady = false;
+  state.traceImageSrc = src;
   if (!src) {
     drawTrace();
     return;
@@ -1737,6 +1795,11 @@ function loadTraceImage() {
   image.onload = () => {
     if (state.traceImage !== image) return;
     state.traceImageReady = true;
+    drawTrace();
+  };
+  image.onerror = () => {
+    if (state.traceImage !== image) return;
+    state.traceImageSrc = null;
     drawTrace();
   };
   image.src = src;
@@ -1758,6 +1821,7 @@ function onTracePointerDown(event) {
       state.selectedPoint = { contour: segment.contour, point: insertedIndex };
       state.traceDragging = { contour: segment.contour, point: insertedIndex, kind: "anchor", start: point };
     } else {
+      if (!pointInTraceCanvas(point)) return;
       const contour = activeContour();
       contour.push(makeTracePoint(point.x, point.y));
       state.selectedPoint = { contour: state.activeContour, point: contour.length - 1 };
@@ -1773,7 +1837,8 @@ function onTracePointerMove(event) {
   if (state.mode !== "trace") return;
   const point = tracePoint(event);
   if (!state.traceDragging) {
-    els.traceCanvas.style.cursor = hitTraceHandle(point) || hitTraceSegment(point) ? "move" : "crosshair";
+    const hit = hitTraceHandle(point) || hitTraceSegment(point);
+    els.traceCanvas.style.cursor = hit ? "move" : pointInTraceCanvas(point) ? "crosshair" : "default";
     return;
   }
   const drag = state.traceDragging;
@@ -1892,6 +1957,10 @@ function tracePoint(event) {
     x: ((event.clientX - rect.left) / rect.width) * TRACE_WORLD_W - TRACE_IMAGE_X,
     y: ((event.clientY - rect.top) / rect.height) * TRACE_WORLD_H - TRACE_IMAGE_Y,
   };
+}
+
+function pointInTraceCanvas(point) {
+  return point.x >= 0 && point.x <= CANVAS_W && point.y >= 0 && point.y <= CANVAS_H;
 }
 
 function clampTraceX(value, kind) {
@@ -2065,13 +2134,14 @@ function drawTrace() {
   traceCtx.fillRect(0, 0, TRACE_WORLD_W, TRACE_WORLD_H);
   traceCtx.fillStyle = "#fff";
   traceCtx.fillRect(TRACE_IMAGE_X, TRACE_IMAGE_Y, CANVAS_W, CANVAS_H);
-  if (state.traceImageReady) {
-    traceCtx.save();
-    traceCtx.translate(TRACE_IMAGE_X, TRACE_IMAGE_Y);
-    traceCtx.globalAlpha = 0.28;
-    traceCtx.drawImage(state.traceImage, 0, 0, CANVAS_W, CANVAS_H);
-    traceCtx.globalAlpha = 1;
-    traceCtx.restore();
+  if (state.traceView === "side-by-side") {
+    const referenceX = traceReferenceX();
+    traceCtx.fillRect(referenceX, TRACE_IMAGE_Y, CANVAS_W, CANVAS_H);
+    if (state.traceImageReady) drawTraceImage(referenceX, 1);
+    drawTracePanelLabel(t("trace.canvasLabel"), TRACE_IMAGE_X);
+    drawTracePanelLabel(t("trace.referenceLabel"), referenceX);
+  } else if (state.traceImageReady) {
+    drawTraceImage(TRACE_IMAGE_X, 0.28);
   }
   drawTraceGrid();
   traceCtx.save();
@@ -2079,6 +2149,27 @@ function drawTrace() {
   drawTracePaths();
   traceCtx.restore();
   drawTraceOverlayRulers();
+}
+
+function traceReferenceX() {
+  return TRACE_IMAGE_X + CANVAS_W + TRACE_SIDE_GAP;
+}
+
+function drawTraceImage(x, alpha) {
+  traceCtx.save();
+  traceCtx.translate(x, TRACE_IMAGE_Y);
+  traceCtx.globalAlpha = alpha;
+  traceCtx.drawImage(state.traceImage, 0, 0, CANVAS_W, CANVAS_H);
+  traceCtx.restore();
+}
+
+function drawTracePanelLabel(label, x) {
+  const pxPerUnit = tracePixelsPerUnit();
+  traceCtx.fillStyle = "#52606d";
+  traceCtx.font = `600 ${Math.min(9, Math.max(3, 11 / pxPerUnit))}px Inter, ui-sans-serif, system-ui`;
+  traceCtx.textAlign = "left";
+  traceCtx.textBaseline = "bottom";
+  traceCtx.fillText(label, x, TRACE_IMAGE_Y - Math.max(3, 7 / pxPerUnit));
 }
 
 function drawTraceOverlayRulers() {
@@ -2207,6 +2298,9 @@ function drawTraceGrid() {
   traceCtx.strokeStyle = "rgba(23, 32, 42, 0.28)";
   traceCtx.lineWidth = lineWidth;
   traceCtx.strokeRect(TRACE_IMAGE_X, TRACE_IMAGE_Y, CANVAS_W, CANVAS_H);
+  if (state.traceView === "side-by-side") {
+    traceCtx.strokeRect(traceReferenceX(), TRACE_IMAGE_Y, CANVAS_W, CANVAS_H);
+  }
 }
 
 function drawTracePaths() {
