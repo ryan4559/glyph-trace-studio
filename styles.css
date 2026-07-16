@@ -145,6 +145,18 @@ h2 {
   background: var(--accent-soft);
 }
 
+.repo-link {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  text-decoration: none;
+}
+
+.repo-link .icon {
+  width: 16px;
+  height: 16px;
+}
+
 .language-picker {
   position: relative;
   flex: 0 0 auto;
