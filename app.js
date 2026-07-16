@@ -92,6 +92,8 @@ const els = {
   gridToggleButton: document.querySelector("#gridToggleButton"),
   zoom: document.querySelector("#zoom"),
   zoomValue: document.querySelector("#zoomValue"),
+  zoomOutButton: document.querySelector("#zoomOutButton"),
+  zoomInButton: document.querySelector("#zoomInButton"),
   x0: document.querySelector("#x0"),
   y0: document.querySelector("#y0"),
   width: document.querySelector("#width"),
@@ -190,6 +192,8 @@ const LANGUAGES = {
       "crop.darkPixels": "dark pixels",
       "crop.lightPixels": "light pixels",
       "crop.threshold": "Threshold",
+      "crop.thresholdHint":
+        "Grayscale cutoff (0 = black, 255 = white): pixels darker than this count as the glyph's ink — or lighter than this, when Foreground is light pixels.",
       "crop.offsetX": "X offset (canvas px)",
       "crop.offsetXHint":
         "Shifts the glyph horizontally after the ink is centered on the canvas — e.g. center a 1 on its vertical stem instead of its full outline.",
@@ -215,6 +219,10 @@ const LANGUAGES = {
       "workspace.fit": "Fit",
       "workspace.grid": "Grid",
       "workspace.zoom": "Zoom",
+      "workspace.zoomIn": "Zoom in",
+      "workspace.zoomOut": "Zoom out",
+      "workspace.zoomReset": "Reset zoom to 100%",
+      "workspace.viewControls": "View controls",
       "mode.crop": "Crop",
       "mode.trace": "Trace",
       "image.label": "Reference image",
@@ -318,6 +326,8 @@ const LANGUAGES = {
       "crop.darkPixels": "深色像素",
       "crop.lightPixels": "淺色像素",
       "crop.threshold": "閾值",
+      "crop.thresholdHint":
+        "灰階明暗的分界（0＝黑，255＝白）：比閾值暗的像素會當成字的筆畫；「前景」選「淺色像素」時則相反。",
       "crop.offsetX": "水平偏移（畫布 px）",
       "crop.offsetXHint": "字形先在畫布置中，再套用這個水平偏移——例如讓 1 以豎筆置中，而不是以整個輪廓置中。",
       "trace.eyebrow": "貝茲描邊",
@@ -342,6 +352,10 @@ const LANGUAGES = {
       "workspace.fit": "符合視窗",
       "workspace.grid": "網格",
       "workspace.zoom": "縮放",
+      "workspace.zoomIn": "放大",
+      "workspace.zoomOut": "縮小",
+      "workspace.zoomReset": "重設縮放為 100%",
+      "workspace.viewControls": "檢視控制",
       "mode.crop": "裁切",
       "mode.trace": "描邊",
       "image.label": "參考底圖",
@@ -1084,6 +1098,9 @@ function bindEvents() {
   els.traceStage.addEventListener("scroll", () => drawTraceOverlayRulers(), { passive: true });
   window.addEventListener("pointerup", onPointerUp);
   els.zoom.addEventListener("input", () => setZoom(Number(els.zoom.value)));
+  els.zoomOutButton.addEventListener("click", () => setZoom(Number(els.zoom.value) - 10));
+  els.zoomInButton.addEventListener("click", () => setZoom(Number(els.zoom.value) + 10));
+  els.zoomValue.addEventListener("click", () => setZoom(100));
   els.fitButton.addEventListener("click", fitToView);
   els.gridToggleButton.addEventListener("click", toggleGrid);
   new ResizeObserver(() => {
@@ -1104,6 +1121,7 @@ function bindEvents() {
   });
   els.threshold.addEventListener("input", () => {
     els.thresholdValue.textContent = els.threshold.value;
+    updateRangeFill(els.threshold);
     updateDraftCrop();
     updatePreview();
   });
@@ -1180,6 +1198,7 @@ function selectChar(char) {
   els.polarity.value = source?.polarity || "dark";
   els.threshold.value = source?.threshold || 110;
   els.thresholdValue.textContent = els.threshold.value;
+  updateRangeFill(els.threshold);
   els.offsetX.value = Math.round(Number(source?.offset_x) || 0);
   els.previewTitle.textContent = char;
   if (source?.imageId && source.imageId !== state.activeImageId && imageById(source.imageId)) {
@@ -1412,8 +1431,17 @@ function numberValue(input, fallback) {
   return Number.isFinite(value) ? value : fallback;
 }
 
+function updateRangeFill(input) {
+  const min = Number(input.min);
+  const max = Number(input.max);
+  const value = Number(input.value);
+  const pct = max > min ? ((value - min) / (max - min)) * 100 : 0;
+  input.style.setProperty("--range-fill", `${pct}%`);
+}
+
 function updateZoomLabel() {
   els.zoomValue.textContent = `${Math.round(Number(els.zoom.value))}%`;
+  updateRangeFill(els.zoom);
 }
 
 function setZoom(value, anchor = null) {

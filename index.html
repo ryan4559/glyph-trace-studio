@@ -18,14 +18,14 @@
     <div id="app">
       <aside class="sidebar">
         <div class="brand">
-          <div>
-            <h1 data-i18n="app.title">Glyph Trace Studio</h1>
+          <h1 data-i18n="app.title">Glyph Trace Studio</h1>
+          <div class="brand-row">
             <p data-i18n="app.subtitle">Image → SVG / OpenSCAD</p>
+            <label class="language-picker" data-i18n-attr="title:language.label">
+              <span class="sr-only" data-i18n="language.label">Language</span>
+              <select id="languageSelect"></select>
+            </label>
           </div>
-          <label class="language-picker">
-            <span data-i18n="language.label">Language</span>
-            <select id="languageSelect"></select>
-          </label>
         </div>
 
         <section class="sidebar-preview">
@@ -86,6 +86,7 @@
           <label class="full-field">
             <span><span data-i18n="crop.threshold">Threshold</span> <b id="thresholdValue">110</b></span>
             <input id="threshold" type="range" min="0" max="255" value="110" />
+            <small class="field-hint" data-i18n="crop.thresholdHint">Grayscale cutoff (0 = black, 255 = white): pixels darker than this count as the glyph's ink — or lighter than this, when Foreground is light pixels.</small>
           </label>
           <label class="full-field" data-i18n-attr="title: crop.offsetXHint">
             <span data-i18n="crop.offsetX">X offset (canvas px)</span>
@@ -191,31 +192,63 @@
 
       <main class="workspace">
         <header class="toolbar">
-          <div class="toolbar-left">
+          <div class="toolbar-row">
             <div class="mode-switch" role="group" aria-label="Editor mode" data-i18n-attr="aria-label:workspace.modeAria">
-              <button id="cropModeButton" class="mode-button active" type="button" data-i18n="mode.crop">Crop</button>
-              <button id="traceModeTopButton" class="mode-button" type="button" data-i18n="mode.trace">Trace</button>
+              <button id="cropModeButton" class="mode-button active" type="button">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
+                <span data-i18n="mode.crop">Crop</span>
+              </button>
+              <button id="traceModeTopButton" class="mode-button" type="button">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 17c2.7-8 9.3-8 12 0"/><rect x="2" y="15" width="4" height="4" rx="1"/><rect x="18" y="15" width="4" height="4" rx="1"/></svg>
+                <span data-i18n="mode.trace">Trace</span>
+              </button>
             </div>
             <div id="traceViewSwitch" class="mode-switch trace-view-switch" role="group" aria-label="Trace view" data-i18n-attr="aria-label:trace.viewAria" hidden>
-              <button id="traceOverlayButton" class="mode-button active" type="button" aria-pressed="true" data-i18n="trace.viewOverlay">Overlay</button>
-              <button id="traceSideBySideButton" class="mode-button" type="button" aria-pressed="false" data-i18n="trace.viewSideBySide">Side by side</button>
+              <button id="traceOverlayButton" class="mode-button active" type="button" aria-pressed="true">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></svg>
+                <span data-i18n="trace.viewOverlay">Overlay</span>
+              </button>
+              <button id="traceSideBySideButton" class="mode-button" type="button" aria-pressed="false">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="7.5" height="14" rx="1.5"/><rect x="13.5" y="5" width="7.5" height="14" rx="1.5"/></svg>
+                <span data-i18n="trace.viewSideBySide">Side by side</span>
+              </button>
             </div>
-            <div class="image-controls">
-              <label class="image-picker">
-                <span data-i18n="image.label">Reference image</span>
-                <select id="imageSelect"></select>
-              </label>
-              <button id="uploadButton" class="ghost" type="button" data-i18n="upload.button">Add images</button>
-              <button id="removeImageButton" class="ghost danger" type="button" data-i18n="image.remove">Remove</button>
+            <div class="toolbar-spring" aria-hidden="true"></div>
+            <div class="zoom-cluster" role="group" data-i18n-attr="aria-label:workspace.viewControls">
+              <button id="fitButton" class="icon-button" type="button" data-i18n-attr="title:workspace.fit">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/></svg>
+                <span class="sr-only" data-i18n="workspace.fit">Fit</span>
+              </button>
+              <button id="gridToggleButton" class="icon-button grid-toggle active" type="button" aria-pressed="true" data-i18n-attr="title:workspace.grid" hidden>
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+                <span class="sr-only" data-i18n="workspace.grid">Grid</span>
+              </button>
+              <span class="cluster-sep" aria-hidden="true"></span>
+              <button id="zoomOutButton" class="icon-button" type="button" data-i18n-attr="aria-label:workspace.zoomOut, title:workspace.zoomOut">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+              </button>
+              <input id="zoom" type="range" min="10" max="400" value="100" data-i18n-attr="aria-label:workspace.zoom" />
+              <button id="zoomInButton" class="icon-button" type="button" data-i18n-attr="aria-label:workspace.zoomIn, title:workspace.zoomIn">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+              <button id="zoomValue" class="zoom-readout" type="button" data-i18n-attr="title:workspace.zoomReset">100%</button>
             </div>
           </div>
-          <div class="zoom-control">
-            <button id="fitButton" class="ghost" type="button" data-i18n="workspace.fit">Fit</button>
-            <button id="gridToggleButton" class="ghost grid-toggle active" type="button" aria-pressed="true" data-i18n="workspace.grid" hidden>Grid</button>
-            <label>
-              <span><span data-i18n="workspace.zoom">Zoom</span> <b id="zoomValue">100%</b></span>
-              <input id="zoom" type="range" min="10" max="400" value="100" />
+          <div class="toolbar-row">
+            <label class="image-picker" data-i18n-attr="title:image.label">
+              <span class="sr-only" data-i18n="image.label">Reference image</span>
+              <svg class="icon field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.9-3.9a2 2 0 0 0-2.83 0L5 20"/></svg>
+              <select id="imageSelect"></select>
             </label>
+            <div class="toolbar-spring" aria-hidden="true"></div>
+            <button id="uploadButton" class="ghost" type="button">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              <span data-i18n="upload.button">Add images</span>
+            </button>
+            <button id="removeImageButton" class="ghost danger" type="button">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+              <span data-i18n="image.remove">Remove</span>
+            </button>
           </div>
         </header>
 
