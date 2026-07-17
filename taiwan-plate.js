@@ -92,13 +92,31 @@ if (project) {
     shapeId: moduleName(settings, char),
   });
 
+  // Click a specimen cell to inspect the glyph at full size in a <dialog>;
+  // Esc or clicking outside the image closes it.
+  const dialog = document.getElementById("glyphDialog");
+  const dialogImg = document.getElementById("glyphDialogImg");
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+
   for (const char of chars) {
     const contours = (traces[char]?.contours || []).filter((contour) => contour.length >= 3);
-    const cell = document.createElement("div");
+    const cell = document.createElement("button");
+    cell.type = "button";
     cell.className = "glyph-cell";
     const img = document.createElement("img");
     img.alt = char;
-    if (contours.length) img.src = Exporters.svgDataUrl(Exporters.buildSvg(contours, glyphOpts(char)));
+    if (contours.length) {
+      img.src = Exporters.svgDataUrl(Exporters.buildSvg(contours, glyphOpts(char)));
+      cell.addEventListener("click", () => {
+        dialogImg.src = img.src;
+        dialogImg.alt = char;
+        dialog.showModal();
+      });
+    } else {
+      cell.disabled = true;
+    }
     const cap = document.createElement("div");
     cap.className = "cap";
     cap.textContent = char;
@@ -106,11 +124,17 @@ if (project) {
     grid.append(cell);
   }
 
+  const DOWNLOAD_ICON =
+    '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>';
+
   const addPlateButtons = (specs, box) => {
     for (const spec of specs) {
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = spec.label;
+      button.innerHTML = DOWNLOAD_ICON;
+      const label = document.createElement("span");
+      label.textContent = spec.label;
+      button.append(label);
       button.addEventListener("click", () => {
         try {
           const text = Plates.buildPlateScad(spec, traces, {

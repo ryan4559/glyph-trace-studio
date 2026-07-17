@@ -1,81 +1,343 @@
+/* Shares the editor's design language (see styles.css): same tokens,
+   capsule = press / rounded rectangle = type, quiet cards on the same
+   gradient backdrop. Kept as a separate file because this page's CSP
+   blocks inline styles. */
 :root {
-  --bg: #f5f6f8;
-  --card: #ffffff;
-  --line: #d9dde3;
-  --text: #1c2430;
-  --muted: #66707e;
+  color-scheme: light;
+  --bg: #e8edf2;
+  --bg-accent: #eef2f6;
+  --surface: #ffffff;
+  --surface-soft: #f5f8fa;
+  --line: #e5eaf0;
+  --line-strong: #c4ccd6;
+  --text: #131a23;
+  --muted: #5f6b7a;
   --accent: #0d9488;
+  --accent-dark: #0f766e;
+  --accent-soft: #d8f3ef;
+  --danger: #b42318;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 32, 0.05), 0 1px 3px rgba(16, 24, 32, 0.05);
+  --ring: 0 0 0 3px rgba(13, 148, 136, 0.32);
+  --font: Inter, "Noto Sans TC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-* { box-sizing: border-box; }
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font: 15px/1.6 -apple-system, "Segoe UI", "Noto Sans TC", sans-serif;
-  background: var(--bg);
+  font: 15px/1.6 var(--font);
+  background: radial-gradient(140% 120% at 100% 0%, var(--bg-accent), var(--bg));
   color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
-main { max-width: 880px; margin: 0 auto; padding: 32px 20px 64px; }
-h1 { font-size: 26px; margin: 0 0 4px; }
-.subtitle { color: var(--muted); margin: 0 0 8px; }
-.tool-link { font-size: 14px; }
-a { color: var(--accent); }
+
+:where(button, input, select, textarea, a):focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tool-link {
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-dark);
+  text-decoration: underline;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.icon-button:hover {
+  background: var(--surface-soft);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.icon {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+}
+
+.repo-link .icon {
+  width: 16px;
+  height: 16px;
+}
+
 section {
-  background: var(--card);
+  margin-top: 18px;
+  padding: 18px 20px;
+  background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 20px 24px;
-  margin-top: 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
-h2 { font-size: 17px; margin: 0 0 12px; }
-h3 { font-size: 14px; margin: 16px 0 8px; color: var(--muted); font-weight: 600; }
+
+.panel-head {
+  margin-bottom: 14px;
+}
+
+.eyebrow {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 800;
+}
+
+h3 {
+  margin: 18px 0 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .glyph-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
+
 .glyph-cell {
+  display: block;
+  width: 100%;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 6px 4px 2px;
+  border-radius: 10px;
+  padding: 6px 4px 3px;
   text-align: center;
-  background: #fff;
+  background: var(--surface-soft);
+  font: inherit;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
 }
-.glyph-cell img { width: 100%; height: 64px; object-fit: contain; display: block; }
-.glyph-cell .cap { font-size: 11px; color: var(--muted); }
-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+.glyph-cell:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  background: var(--surface);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.glyph-cell:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.glyph-cell img {
+  display: block;
+  width: 100%;
+  height: 64px;
+  object-fit: contain;
+}
+
+.glyph-cell .cap {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+label {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 textarea {
   display: block;
   width: 100%;
   min-height: 84px;
   margin-top: 6px;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: 400 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
   white-space: pre;
   overflow-x: auto;
   resize: vertical;
   color: var(--text);
+  background: white;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
 }
-.buttons { display: flex; flex-wrap: wrap; gap: 10px; }
-button {
-  font: 600 14px/1 inherit;
-  font-family: inherit;
-  padding: 12px 18px;
+
+textarea:hover {
+  border-color: var(--line-strong);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.buttons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff;
+  border-radius: 999px;
+  background: var(--surface);
   color: var(--text);
   cursor: pointer;
+  font: 700 13px/1 var(--font);
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
 }
-button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-button:disabled { opacity: 0.5; cursor: default; }
-.note { font-size: 13px; color: var(--muted); margin-top: 12px; }
-ul.note { padding-left: 1.5em; margin-bottom: 0; }
-ul.note li { margin: 2px 0; }
-ul.note > li { margin-top: 6px; }
-ul.note > li:first-child { margin-top: 0; }
-ul.note ul { padding-left: 1.5em; margin: 2px 0 0; }
-#status { min-height: 1.4em; font-size: 13px; margin-top: 10px; }
-#status.error { color: #b42318; }
-#status.ok { color: var(--accent); }
-footer { color: var(--muted); font-size: 13px; margin-top: 24px; }
+
+.buttons button:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.buttons button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.buttons .icon {
+  color: var(--muted);
+  transition: color 140ms ease;
+}
+
+.buttons button:hover:not(:disabled) .icon {
+  color: inherit;
+}
+
+#status {
+  min-height: 20px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+#status.error {
+  color: var(--danger);
+}
+
+#status.ok {
+  color: var(--accent-dark);
+}
+
+ul.note {
+  margin: 16px 0 0;
+  padding: 12px 14px 12px 2.2em;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+ul.note li {
+  margin: 2px 0;
+}
+
+ul.note > li {
+  margin-top: 8px;
+}
+
+ul.note > li:first-child {
+  margin-top: 0;
+}
+
+ul.note ul {
+  padding-left: 1.5em;
+  margin: 2px 0 0;
+}
+
+footer {
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.glyph-dialog {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 22px 60px rgba(16, 24, 32, 0.25);
+}
+
+.glyph-dialog::backdrop {
+  background: rgba(19, 26, 35, 0.45);
+}
+
+/* With no focusable child, showModal() focuses the dialog itself — the
+   backdrop already signals modality, so skip the default focus ring. */
+.glyph-dialog:focus-visible {
+  outline: none;
+  box-shadow: 0 22px 60px rgba(16, 24, 32, 0.25);
+}
+
+#glyphDialogImg {
+  display: block;
+  height: min(60vh, 520px);
+  max-width: calc(100vw - 88px);
+  margin: 0 auto;
+  object-fit: contain;
+}
