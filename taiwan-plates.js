@@ -213,8 +213,9 @@ export const Plates = (() => {
       plateColor: "#FFFFFF",
       textColor: "#000000",
       plateTypes: null,
-      // 電動車牌別 (新版電動車專屬號牌樣式): 白底黑字、無綠帶, 上緣中央
-      // 加註「電動車」三字, 字間寬字距, 與螺絲孔槽同列. 依實車參考照
+      // 電動車字樣 (新版電動車專屬號牌樣式, is_ev_text 核取方塊): 白底
+      // 黑字、無綠帶, 上緣中央加註「電動車」三字, 字間寬字距, 與螺絲孔槽
+      // 同列. 依實車參考照
       // (以螺絲孔距 190mm 校準): 字墨高約 22mm (Noto Sans TC 墨高約等於
       // size, 取 22), 字心距約 55mm (spacing 1.8), 字列中心距底邊約
       // 142mm.「電動車」無 CJK 字模, 同 1992 地區標示以 Noto Sans TC
@@ -431,9 +432,9 @@ export const Plates = (() => {
       lines.push(
         "",
         "/* [電動車] */",
-        "// 牌別 (一般: 標準白牌; 電動車: 上緣中央加註「電動車」字樣)",
-        'plate_type = "一般"; // ["一般","電動車"]',
-        "// 電動車字樣顏色 (牌別選「電動車」時生效)",
+        "// 是否加註電動車字樣 (電動車專屬號牌樣式)",
+        "is_ev_text = false;",
+        "// 電動車字樣顏色 (勾選加註時生效)",
         `ev_text_color = "${spec.ev.textColor}";`,
         "// 電動車字樣字型",
         `ev_font = "${spec.ev.font}";`,
@@ -704,16 +705,16 @@ export const Plates = (() => {
     return lines;
   }
 
-  // 電動車牌別的 base() 附加件, 只在 plate_type == "電動車" 時放置: 新版
-  // 電動車樣式為白底黑字、無綠帶, 僅於上緣中央 (與螺絲孔槽同列) 加註寬
-  // 字距的「電動車」三字 (text(), 無 CJK 字模 — 同 1992 地區標示作法),
-  // 字樣自凹版面凸起 glyph_depth, 頂面與號碼字模同高.
+  // 電動車字樣的 base() 附加件, 只在勾選 is_ev_text 時放置: 新版電動車
+  // 樣式為白底黑字、無綠帶, 僅於上緣中央 (與螺絲孔槽同列) 加註寬字距的
+  // 「電動車」三字 (text(), 無 CJK 字模 — 同 1992 地區標示作法), 字樣自
+  // 凹版面凸起 glyph_depth, 頂面與號碼字模同高.
   function evCaptionLines(spec) {
     const ev = spec.ev;
     return [
       "",
-      "    // 電動車牌別: 上緣中央加註「電動車」(新版樣式白底黑字, 無綠帶)",
-      '    if (plate_type == "電動車") {',
+      "    // 電動車字樣: 上緣中央加註「電動車」(新版樣式白底黑字, 無綠帶)",
+      "    if (is_ev_text) {",
       '        // halign="center" 置中的是含尾端字距的總 advance 寬',
       "        // (advance = size/0.72), 右移 (spacing-1)*height/1.44 使墨面真正置中",
       "        color(ev_text_color)",

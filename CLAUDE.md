@@ -109,10 +109,11 @@ image, and any bulk glyph re-render must load each source's own image.
   rendered with OpenSCAD `text()` in Noto Sans TC (a MakerWorld built-in
   font; there are no CJK traces) centered in the top band; large-heavy
   plates never had region text, so that spec has no `region`). The 新式
-  (2012 起, 3-4 七碼) geometry lives in `SPECS_2012` (car 380×160 with a
-  牌別 dropdown — 一般/電動車; the 電動車 option, from the car spec's `ev`
-  block, renders the current EV-plate style — plain white plate, no green
-  bands — adding only a wide-letter-spaced black「電動車」caption top-center
+  (2012 起, 3-4 七碼) geometry lives in `SPECS_2012` (car 380×160 with an
+  `is_ev_text` checkbox in its own [電動車] customizer section; the option,
+  from the car spec's `ev` block, renders the current EV-plate style —
+  plain white plate, no green bands (an older green-band style was
+  discontinued) — adding only a wide-letter-spaced black「電動車」caption top-center
   on the screw-slot row (size 22 / spacing 1.8 / center y 142, measured from
   a real-plate photo calibrated by the 190 mm screw spacing), drawn with
   OpenSCAD `text()` in Noto Sans TC like the 1992 region text, since there
