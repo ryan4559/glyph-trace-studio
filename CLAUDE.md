@@ -114,8 +114,9 @@ image, and any bulk glyph re-render must load each source's own image.
   from the car spec's `ev` block, renders the current EV-plate style —
   plain white plate, no green bands (an older green-band style was
   discontinued) — adding only a wide-letter-spaced black「電動車」caption top-center
-  on the screw-slot row (size 22 / spacing 1.8 / center y 142, measured from
-  a real-plate photo calibrated by the 190 mm screw spacing), drawn with
+  on the screw-slot row (size 20 / spacing 1.7 / center y 137 — measured
+  off a real-plate photo calibrated by the 190 mm screw spacing, then
+  hand-tuned by the author), drawn with
   OpenSCAD `text()` in Noto Sans TC like the 1992 region text, since there
   are no CJK traces; motorcycle 260×140, large-heavy motorcycle 300×150
   with 紅牌/黃牌 dropdown, 紅牌 default; `baseStyle: "2012"` swaps in the new-style base —

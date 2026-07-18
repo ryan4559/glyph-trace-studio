@@ -215,18 +215,17 @@ export const Plates = (() => {
       plateTypes: null,
       // 電動車字樣 (新版電動車專屬號牌樣式, is_ev_text 核取方塊): 白底
       // 黑字、無綠帶, 上緣中央加註「電動車」三字, 字間寬字距, 與螺絲孔槽
-      // 同列. 依實車參考照
-      // (以螺絲孔距 190mm 校準): 字墨高約 22mm (Noto Sans TC 墨高約等於
-      // size, 取 22), 字心距約 55mm (spacing 1.8), 字列中心距底邊約
-      // 142mm.「電動車」無 CJK 字模, 同 1992 地區標示以 Noto Sans TC
-      // text() 置中.
+      // 同列. 實車參考照初測 (以螺絲孔距 190mm 校準, Noto Sans TC 墨高約
+      // 等於 size): 字墨高約 22mm, 字心距約 55mm, 字列中心距底邊約 142mm;
+      // 預設值再依使用者微調定案.「電動車」無 CJK 字模, 同 1992 地區標示
+      // 以 Noto Sans TC text() 置中.
       ev: {
         textColor: "#000000",
         font: "Noto Sans TC:style=Bold",
-        textHeight: 22,
-        textSpacing: 1.8,
+        textHeight: 20,
+        textSpacing: 1.7,
         textCenterX: 190,
-        textCenterY: 142,
+        textCenterY: 137,
       },
       layoutComments: {
         size: "車牌參數 (實牌尺寸 380×160, 圓角半徑 15)",

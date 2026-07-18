@@ -40,9 +40,9 @@ ev_text_color = "#000000";
 // 電動車字樣字型
 ev_font = "Noto Sans TC:style=Bold";
 // 電動車字樣字高
-ev_text_height = 22; // [8:0.5:28]
+ev_text_height = 20; // [8:0.5:28]
 // 電動車字樣字距 (字距倍數)
-ev_text_spacing = 1.8; // [1:0.05:4]
+ev_text_spacing = 1.7; // [1:0.05:4]
 
 /* [文字偏移] */
 // 第一碼
@@ -256,7 +256,7 @@ module base(length, width, height, radius) {
         // halign="center" 置中的是含尾端字距的總 advance 寬
         // (advance = size/0.72), 右移 (spacing-1)*height/1.44 使墨面真正置中
         color(ev_text_color)
-        translate([(190 + (ev_text_spacing - 1) * ev_text_height / 1.44) * multiply, 142 * multiply, height - depth_base])
+        translate([(190 + (ev_text_spacing - 1) * ev_text_height / 1.44) * multiply, 137 * multiply, height - depth_base])
         linear_extrude(height = glyph_depth)
         text("電動車", size = ev_text_height * multiply, font = ev_font, spacing = ev_text_spacing, halign = "center", valign = "center");
     }
