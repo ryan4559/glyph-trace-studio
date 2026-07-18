@@ -109,17 +109,21 @@ image, and any bulk glyph re-render must load each source's own image.
   rendered with OpenSCAD `text()` in Noto Sans TC (a MakerWorld built-in
   font; there are no CJK traces) centered in the top band; large-heavy
   plates never had region text, so that spec has no `region`). The 新式
-  (2012 起, 3-4 七碼) geometry lives in `SPECS_2012` (car 380×160 with an
-  `is_ev_text` checkbox in its own [電動車] customizer section; the option,
-  from the car spec's `ev` block, renders the current EV-plate style —
-  plain white plate, no green bands (an older green-band style was
-  discontinued) — adding only a wide-letter-spaced black「電動車」caption top-center
-  on the screw-slot row (size 20 / spacing 1.7 / center y 137 — measured
-  off a real-plate photo calibrated by the 190 mm screw spacing, then
-  hand-tuned by the author), drawn with
-  OpenSCAD `text()` in Noto Sans TC like the 1992 region text, since there
-  are no CJK traces; motorcycle 260×140, large-heavy motorcycle 300×150
-  with 紅牌/黃牌 dropdown, 紅牌 default; `baseStyle: "2012"` swaps in the new-style base —
+  (2012 起, 3-4 七碼) geometry lives in `SPECS_2012` (car 380×160,
+  motorcycle 260×140, large-heavy motorcycle 300×150 with 紅牌/黃牌
+  dropdown, 紅牌 default. All three specs carry an `ev` block emitting an
+  `is_ev_text` checkbox in its own [電動車] customizer section: the current
+  EV-plate style — no green bands (an older green-band style was
+  discontinued) — adds only a「電動車」caption top-center on the screw-slot
+  row, drawn with OpenSCAD `text()` in Noto Sans TC like the 1992 region
+  text, since there are no CJK traces; the default font is the regular
+  weight, with the Bold name kept in the param comment. Car caption is
+  wide-spaced (size 20 / spacing 1.7 / center y 137 — measured off a
+  real-plate photo calibrated by the 190 mm screw spacing, then hand-tuned
+  by the author); motorcycle captions are tight-spaced per the 2018
+  electric-motorcycle plate photo (≈0.3× the digit height, spacing 1.15:
+  17/118 motorcycle and 18/127 large-heavy after author hand-tuning,
+  white default on the red plate); `baseStyle: "2012"` swaps in the new-style base —
   raised rim + recessed face + three 梅花 anti-counterfeit marks, 左右凹、
   中間凸 (the star-shaped pieces in the geometry are internal structure of
   the plum marks, not separate marks) — via `baseLines2012`; the same 2012

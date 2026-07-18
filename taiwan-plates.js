@@ -221,7 +221,7 @@ export const Plates = (() => {
       // 以 Noto Sans TC text() 置中.
       ev: {
         textColor: "#000000",
-        font: "Noto Sans TC:style=Bold",
+        font: "Noto Sans TC",
         textHeight: 20,
         textSpacing: 1.7,
         textCenterX: 190,
@@ -264,6 +264,17 @@ export const Plates = (() => {
       plateColor: "#FFFFFF",
       textColor: "#000000",
       plateTypes: null,
+      // 電動車字樣, 依 2018 電動機車專屬牌照片 (白牌 EMJ) 量測 (初測
+      // 18/122; 預設值依使用者微調定案): 字距遠窄於汽車牌 (spacing 1.15),
+      // 字列貼齊螺絲孔槽列 (槽心 y=122).
+      ev: {
+        textColor: "#000000",
+        font: "Noto Sans TC",
+        textHeight: 17,
+        textSpacing: 1.15,
+        textCenterX: 130,
+        textCenterY: 118,
+      },
       layoutComments: {
         size: "車牌參數 (實牌尺寸 260×140, 圓角半徑 15)",
         center: "字排中心距底邊 70mm (垂直置中)",
@@ -304,6 +315,18 @@ export const Plates = (() => {
         ["紅牌", "#FF0000", "#FFFFFF"],
         ["黃牌", "#FFFF00", "#000000"],
       ],
+      // 電動車字樣, 同 2018 電動機車專屬牌樣式 (紅/黃牌照片量測比例一致,
+      // 初測 20/132; 預設值依使用者微調定案): spacing 1.15, 字列貼齊螺絲
+      // 孔槽列 (槽心 y=132). 預設色配紅牌白字; 黃牌宜改黑.
+      ev: {
+        textColor: "#FFFFFF",
+        colorComment: "電動車字樣顏色 (勾選加註時生效; 紅牌宜白、黃牌宜黑)",
+        font: "Noto Sans TC",
+        textHeight: 18,
+        textSpacing: 1.15,
+        textCenterX: 150,
+        textCenterY: 127,
+      },
       layoutComments: {
         size: "車牌參數 (實牌尺寸 300×150, 圓角半徑 15)",
         center: "字排中心距底邊 74mm (依 300×150 參考圖; 官方字體 65×32)",
@@ -433,9 +456,9 @@ export const Plates = (() => {
         "/* [電動車] */",
         "// 是否加註電動車字樣 (電動車專屬號牌樣式)",
         "is_ev_text = false;",
-        "// 電動車字樣顏色 (勾選加註時生效)",
+        `// ${spec.ev.colorComment || "電動車字樣顏色 (勾選加註時生效)"}`,
         `ev_text_color = "${spec.ev.textColor}";`,
-        "// 電動車字樣字型",
+        '// 電動車字樣字型 (粗體可改 "Noto Sans TC:style=Bold")',
         `ev_font = "${spec.ev.font}";`,
         "// 電動車字樣字高",
         `ev_text_height = ${num(spec.ev.textHeight)}; // [8:0.5:28]`,
@@ -704,15 +727,15 @@ export const Plates = (() => {
     return lines;
   }
 
-  // 電動車字樣的 base() 附加件, 只在勾選 is_ev_text 時放置: 新版電動車
-  // 樣式為白底黑字、無綠帶, 僅於上緣中央 (與螺絲孔槽同列) 加註寬字距的
-  // 「電動車」三字 (text(), 無 CJK 字模 — 同 1992 地區標示作法), 字樣自
-  // 凹版面凸起 glyph_depth, 頂面與號碼字模同高.
+  // 電動車字樣的 base() 附加件, 只在勾選 is_ev_text 時放置: 電動車專屬
+  // 號牌於上緣中央 (與螺絲孔槽同列) 加註「電動車」三字 (text(), 無 CJK
+  // 字模 — 同 1992 地區標示作法), 字樣自凹版面凸起 glyph_depth, 頂面與
+  // 號碼字模同高. 字距/字高依 spec.ev (汽車寬字距, 機車窄字距).
   function evCaptionLines(spec) {
     const ev = spec.ev;
     return [
       "",
-      "    // 電動車字樣: 上緣中央加註「電動車」(新版樣式白底黑字, 無綠帶)",
+      "    // 電動車字樣: 上緣中央加註「電動車」(電動車專屬號牌樣式)",
       "    if (is_ev_text) {",
       '        // halign="center" 置中的是含尾端字距的總 advance 寬',
       "        // (advance = size/0.72), 右移 (spacing-1)*height/1.44 使墨面真正置中",

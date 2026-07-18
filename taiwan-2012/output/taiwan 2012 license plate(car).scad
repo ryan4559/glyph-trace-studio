@@ -37,8 +37,8 @@ plate_color = "#FFFFFF";
 is_ev_text = false;
 // 電動車字樣顏色 (勾選加註時生效)
 ev_text_color = "#000000";
-// 電動車字樣字型
-ev_font = "Noto Sans TC:style=Bold";
+// 電動車字樣字型 (粗體可改 "Noto Sans TC:style=Bold")
+ev_font = "Noto Sans TC";
 // 電動車字樣字高
 ev_text_height = 20; // [8:0.5:28]
 // 電動車字樣字距 (字距倍數)
@@ -251,7 +251,7 @@ module base(length, width, height, radius) {
         star_from_rectangles(star_length, star_width, depth_base*2 + plum_height*2);
     }
 
-    // 電動車字樣: 上緣中央加註「電動車」(新版樣式白底黑字, 無綠帶)
+    // 電動車字樣: 上緣中央加註「電動車」(電動車專屬號牌樣式)
     if (is_ev_text) {
         // halign="center" 置中的是含尾端字距的總 advance 寬
         // (advance = size/0.72), 右移 (spacing-1)*height/1.44 使墨面真正置中
