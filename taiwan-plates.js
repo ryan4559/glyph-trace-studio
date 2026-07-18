@@ -213,6 +213,20 @@ export const Plates = (() => {
       plateColor: "#FFFFFF",
       textColor: "#000000",
       plateTypes: null,
+      // 電動車牌別 (新版電動車專屬號牌樣式): 白底黑字、無綠帶, 上緣中央
+      // 加註「電動車」三字, 字間寬字距, 與螺絲孔槽同列. 依實車參考照
+      // (以螺絲孔距 190mm 校準): 字墨高約 22mm (Noto Sans TC 墨高約等於
+      // size, 取 22), 字心距約 55mm (spacing 1.8), 字列中心距底邊約
+      // 142mm.「電動車」無 CJK 字模, 同 1992 地區標示以 Noto Sans TC
+      // text() 置中.
+      ev: {
+        textColor: "#000000",
+        font: "Noto Sans TC:style=Bold",
+        textHeight: 22,
+        textSpacing: 1.8,
+        textCenterX: 190,
+        textCenterY: 142,
+      },
       layoutComments: {
         size: "車牌參數 (實牌尺寸 380×160, 圓角半徑 15)",
         center: "字排中心距底邊 74.5mm (依原 3-4 模型版面)",
@@ -411,6 +425,22 @@ export const Plates = (() => {
         `region_center_x = ${num(spec.region.centerX)}; // ${slider(spec.region.xSlider)}`,
         `// ${spec.region.comment}`,
         `region_center_y = ${num(spec.region.centerY)}; // ${slider(spec.region.ySlider)}`
+      );
+    }
+    if (spec.ev) {
+      lines.push(
+        "",
+        "/* [電動車] */",
+        "// 牌別 (一般: 標準白牌; 電動車: 上緣中央加註「電動車」字樣)",
+        'plate_type = "一般"; // ["一般","電動車"]',
+        "// 電動車字樣顏色 (牌別選「電動車」時生效)",
+        `ev_text_color = "${spec.ev.textColor}";`,
+        "// 電動車字樣字型",
+        `ev_font = "${spec.ev.font}";`,
+        "// 電動車字樣字高",
+        `ev_text_height = ${num(spec.ev.textHeight)}; // [8:0.5:28]`,
+        "// 電動車字樣字距 (字距倍數)",
+        `ev_text_spacing = ${num(spec.ev.textSpacing)}; // [1:0.05:4]`
       );
     }
     lines.push("", "/* [文字偏移] */");
@@ -667,10 +697,31 @@ export const Plates = (() => {
       "        // 右凹梅花內的凸星形紋",
       `        translate([${num(marks.xs[2])} * multiply, ${num(marks.y)} * multiply, height - depth_base - plum_height])`,
       "        star_from_rectangles(star_length, star_width, depth_base*2 + plum_height*2);",
-      "    }",
-      "}"
+      "    }"
     );
+    if (spec.ev) lines.push(...evCaptionLines(spec));
+    lines.push("}");
     return lines;
+  }
+
+  // 電動車牌別的 base() 附加件, 只在 plate_type == "電動車" 時放置: 新版
+  // 電動車樣式為白底黑字、無綠帶, 僅於上緣中央 (與螺絲孔槽同列) 加註寬
+  // 字距的「電動車」三字 (text(), 無 CJK 字模 — 同 1992 地區標示作法),
+  // 字樣自凹版面凸起 glyph_depth, 頂面與號碼字模同高.
+  function evCaptionLines(spec) {
+    const ev = spec.ev;
+    return [
+      "",
+      "    // 電動車牌別: 上緣中央加註「電動車」(新版樣式白底黑字, 無綠帶)",
+      '    if (plate_type == "電動車") {',
+      '        // halign="center" 置中的是含尾端字距的總 advance 寬',
+      "        // (advance = size/0.72), 右移 (spacing-1)*height/1.44 使墨面真正置中",
+      "        color(ev_text_color)",
+      `        translate([(${num(ev.textCenterX)} + (ev_text_spacing - 1) * ev_text_height / 1.44) * multiply, ${num(ev.textCenterY)} * multiply, height - depth_base])`,
+      "        linear_extrude(height = glyph_depth)",
+      '        text("電動車", size = ev_text_height * multiply, font = ev_font, spacing = ev_text_spacing, halign = "center", valign = "center");',
+      "    }",
+    ];
   }
 
   function baseLines(spec) {

@@ -32,6 +32,18 @@ text_color = "#000000";
 // 底板顏色
 plate_color = "#FFFFFF";
 
+/* [電動車] */
+// 牌別 (一般: 標準白牌; 電動車: 上緣中央加註「電動車」字樣)
+plate_type = "一般"; // ["一般","電動車"]
+// 電動車字樣顏色 (牌別選「電動車」時生效)
+ev_text_color = "#000000";
+// 電動車字樣字型
+ev_font = "Noto Sans TC:style=Bold";
+// 電動車字樣字高
+ev_text_height = 22; // [8:0.5:28]
+// 電動車字樣字距 (字距倍數)
+ev_text_spacing = 1.8; // [1:0.05:4]
+
 /* [文字偏移] */
 // 第一碼
 number_1_offset = 10; // [5:1:335]
@@ -237,6 +249,16 @@ module base(length, width, height, radius) {
         // 右凹梅花內的凸星形紋
         translate([285 * multiply, 17 * multiply, height - depth_base - plum_height])
         star_from_rectangles(star_length, star_width, depth_base*2 + plum_height*2);
+    }
+
+    // 電動車牌別: 上緣中央加註「電動車」(新版樣式白底黑字, 無綠帶)
+    if (plate_type == "電動車") {
+        // halign="center" 置中的是含尾端字距的總 advance 寬
+        // (advance = size/0.72), 右移 (spacing-1)*height/1.44 使墨面真正置中
+        color(ev_text_color)
+        translate([(190 + (ev_text_spacing - 1) * ev_text_height / 1.44) * multiply, 142 * multiply, height - depth_base])
+        linear_extrude(height = glyph_depth)
+        text("電動車", size = ev_text_height * multiply, font = ev_font, spacing = ev_text_spacing, halign = "center", valign = "center");
     }
 }
 

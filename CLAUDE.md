@@ -109,9 +109,15 @@ image, and any bulk glyph re-render must load each source's own image.
   rendered with OpenSCAD `text()` in Noto Sans TC (a MakerWorld built-in
   font; there are no CJK traces) centered in the top band; large-heavy
   plates never had region text, so that spec has no `region`). The 新式
-  (2012 起, 3-4 七碼) geometry lives in `SPECS_2012` (car 380×160,
-  motorcycle 260×140, large-heavy motorcycle 300×150 with 紅牌/黃牌
-  dropdown, 紅牌 default; `baseStyle: "2012"` swaps in the new-style base —
+  (2012 起, 3-4 七碼) geometry lives in `SPECS_2012` (car 380×160 with a
+  牌別 dropdown — 一般/電動車; the 電動車 option, from the car spec's `ev`
+  block, renders the current EV-plate style — plain white plate, no green
+  bands — adding only a wide-letter-spaced black「電動車」caption top-center
+  on the screw-slot row (size 22 / spacing 1.8 / center y 142, measured from
+  a real-plate photo calibrated by the 190 mm screw spacing), drawn with
+  OpenSCAD `text()` in Noto Sans TC like the 1992 region text, since there
+  are no CJK traces; motorcycle 260×140, large-heavy motorcycle 300×150
+  with 紅牌/黃牌 dropdown, 紅牌 default; `baseStyle: "2012"` swaps in the new-style base —
   raised rim + recessed face + three 梅花 anti-counterfeit marks, 左右凹、
   中間凸 (the star-shaped pieces in the geometry are internal structure of
   the plum marks, not separate marks) — via `baseLines2012`; the same 2012
